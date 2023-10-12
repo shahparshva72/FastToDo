@@ -23,23 +23,23 @@ const Register = () => {
           'Accept': 'application/json',
         },
       });
-      
+
       if (response.status === 200) {
         // User registered successfully
         console.log("User registered:", response.data);
-  
+
         // Now perform auto-login
         const formData = new URLSearchParams();
         formData.append("username", username);
         formData.append("password", password);
-  
+
         const tokenResponse = await axios.post("/token", formData, {
           headers: {
             "Content-Type": "application/x-www-form-urlencoded",
           },
           withCredentials: true,
         });
-  
+
         if (tokenResponse.status === 200 && tokenResponse.data.access_token) {
           setContextUsername(username);  // Set username state
           setIsLoggedIn(true);  // Set login state
@@ -50,7 +50,7 @@ const Register = () => {
       console.error("Error during registration or login:", error);
     }
   };
-  
+
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-slate-800 py-12 px-4 sm:px-6 lg:px-8">
@@ -97,14 +97,14 @@ const Register = () => {
           <div>
             <button
               type="submit"
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              className="group relative w-full flex justify-center p-4 border border-transparent text-md font-semibold rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
             >
               Register
             </button>
           </div>
         </form>
         <div className="mt-4">
-          <button className="text-white underline" onClick={goToLogin}>
+          <button className="text-white bg-purple-500 p-4 rounded-md hover:bg-purple-700 text-md" onClick={goToLogin}>
             Sign In Instead
           </button>
         </div>

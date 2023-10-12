@@ -1,8 +1,8 @@
 import axios from "axios";
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "../AuthContext";
 
-const TaskForm = ({ editingTask, onUpdate, onCancel }) => {
+const TaskForm = ({ editingTask, onUpdate, onCancel, onAddTask }) => {
   const [taskName, setTaskName] = useState(editingTask ? editingTask.taskName : "");
   const [taskDescription, setTaskDescription] = useState(editingTask ? editingTask.taskDescription : "");
   const [dueDate, setDueDate] = useState(editingTask ? editingTask.dueDate.split("T")[0] : "");
@@ -34,27 +34,22 @@ const TaskForm = ({ editingTask, onUpdate, onCancel }) => {
     if (editingTask) {
       taskData = {
         ...taskData,
-        id: editingTask.id  // Add the missing id when editing
+        id: editingTask.id
       };
     }
 
-    console.log('Task Data to send:', taskData);  // Logging the data to be sent
-
     try {
       if (editingTask) {
-        console.log(`Editing task. Sending PUT request to /tasks/${editingTask.id}`);
         await axios.put(`/tasks/${editingTask.id}`, taskData, {
           withCredentials: true
         });
-        console.log("Task updated successfully");
-        onUpdate();
+        onUpdate(taskData);
       } else {
-        console.log("Creating new task. Sending POST request to /tasks");
         const response = await axios.post("/tasks", null, {
           params: taskData,
           withCredentials: true
         });
-        console.log("Task created successfully:", response.data);
+        onAddTask(taskData);
         onCancel();
       }
     } catch (error) {

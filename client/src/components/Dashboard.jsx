@@ -4,7 +4,6 @@ import TaskForm from "./TaskForm";
 import Card from "./Card/Card";
 import { useAuth } from "../AuthContext";
 import axios from "axios";
-import { set } from "mongoose";
 
 const Dashboard = () => {
   const [showModal, setShowModal] = useState(false);
@@ -13,7 +12,7 @@ const Dashboard = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { username } = useAuth();
 
-  const [currentTask, setCurrentTask] = useState(null);  // Add this line
+  const [currentTask, setCurrentTask] = useState(null);
 
   const editTask = (taskId) => {
     const taskToEdit = tasks.find((task) => task.id === taskId);
@@ -43,6 +42,20 @@ const Dashboard = () => {
     setTasks([...tasks, taskToAdd]);
   };
 
+  const deleteTask = async (taskId) => {
+    if (window.confirm("Are you sure you want to delete this task?")) {
+      try {
+        await axios.delete(`/tasks/${taskId}`, {
+          withCredentials: true,
+        });
+        const updatedTasks = tasks.filter((task) => task.id !== taskId);
+        setTasks(updatedTasks);
+      } catch (error) {
+        console.error("Could not delete task:", error);
+      }
+    }
+  };
+
   useEffect(() => {
     const fetchTasks = async () => {
       setIsLoading(true);
@@ -57,7 +70,8 @@ const Dashboard = () => {
     };
 
     fetchTasks();
-  }, [tasks]);
+  }, []);
+
 
   const toggleCompleted = async (taskId) => {
     try {
@@ -98,17 +112,17 @@ const Dashboard = () => {
       <div className="max-w-screen-xl mx-auto">
         <nav className="bg-indigo-400 p-4 fixed top-0 left-0 w-full z-50">
           <div className="flex justify-between items-center">
-            <span className="text-white text-lg font-semibold">
-              Hello, {username}
+            <span className="text-white text-2xl font-extrabold">
+              FastToDo
             </span>
-            <button className="text-white" onClick={logout}>
+            <button className="text-white bg-indigo-500 hover:bg-indigo-700 px-4 py-2 rounded" onClick={logout}>
               Sign Out
             </button>
           </div>
         </nav>
 
-        <h1 className="text-3xl font-bold text-center text-indigo-400 mb-6 mt-20">
-          My Tasks
+        <h1 className="text-3xl font-bold text-indigo-400 mb-6 mt-20">
+          Hello, {username}
         </h1>
         <button
           className="bg-indigo-500 text-white px-4 py-2 rounded mb-6"
@@ -123,6 +137,7 @@ const Dashboard = () => {
               onCancel={() => setShowModal(false)}
               onUpdate={updateTask}
               editingTask={currentTask}
+              onAddTask={addTask}
             />
 
           </Modal>
@@ -157,12 +172,13 @@ const Dashboard = () => {
               {pendingTasks.map((task) => (
                 <Card
                   key={task.id}
-                  onEdit={() => triggerEdit(task.id)}  // Change this line
+                  onEdit={() => triggerEdit(task.id)}
                   taskName={task.taskName}
                   taskDescription={task.taskDescription}
                   isCompleted={task.isCompleted}
                   dueDate={task.dueDate}
                   onToggleCompleted={() => toggleCompleted(task.id)}
+                  onDelete={() => deleteTask(task.id)}
                 />
               ))}
             </div>
@@ -191,6 +207,7 @@ const Dashboard = () => {
                   isCompleted={task.isCompleted}
                   dueDate={task.dueDate}
                   onToggleCompleted={() => toggleCompleted(task.id)}
+                  onDelete={() => deleteTask(task.id)}
                 />
               ))}
             </div>

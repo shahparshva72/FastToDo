@@ -1,6 +1,8 @@
-import React from "react";
-import Edit from '../../assets/edit';
-import Delete from '../../assets/delete';
+import Edit from '../Icons/edit';
+import Delete from '../Icons/delete';
+import moment from "moment";
+import Clock from '../Icons/clock';
+import Checkbox from "../Icons/checkbox";
 
 const Card = ({
   id,
@@ -24,22 +26,27 @@ const Card = ({
     onEdit(taskToEdit);
   };
 
+  const formattedDueDate = moment(dueDate).format('MMM Do YYYY, h:mm a');
+
   return (
     <div className="w-full md:w-64 h-auto p-4 bg-gray-900 rounded-lg shadow-2xl border-2 border-gray-700 mb-4">
       <div className="flex flex-col justify-between h-full">
         <div>
-          <h3 className={`font-semibold text-lg mb-2 text-white ${isCompleted ? "line-through" : ""}`}>
+          <h3 className={`font-bold text-xl mb-2 text-white ${isCompleted ? "line-through" : ""}`}>
             {taskName}
           </h3>
-          <p className="text-gray-400">{taskDescription}</p>
-          <p className="text-sm text-gray-500 mt-2">{dueDate}</p>
+          <p className="text-gray-400 text-base">{taskDescription}</p>
+          <p className="flex items-center text-sm text-gray-500 italic mt-2">
+            <Clock />
+            <span className="ml-1">{formattedDueDate}</span>
+          </p>
         </div>
         <div className="flex justify-between items-center mt-4">
           <button
             className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded transition-colors duration-300"
             onClick={() => onToggleCompleted(id)}
           >
-            {isCompleted ? "Uncheck" : "Check"}
+            <Checkbox isCompleted={isCompleted} />
           </button>
           <div className="flex space-x-2">
             <button
@@ -50,7 +57,7 @@ const Card = ({
             </button>
             <button
               className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded transition-colors duration-300"
-              onClick={() => onDelete(id)}
+              onClick={onDelete}
             >
               <Delete />
             </button>
