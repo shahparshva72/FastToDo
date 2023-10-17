@@ -20,6 +20,11 @@ const Dashboard = () => {
     setShowModal(true);
   };
 
+  const cancelBtnHandler = () => {
+    setShowModal(false);
+    setCurrentTask(null);
+  };
+
 
   const updateTask = (updatedTask) => {
     try {
@@ -32,11 +37,10 @@ const Dashboard = () => {
     }
 
     setShowModal(false);
-    setCurrentTask(null);  // Reset currentTask
+    setCurrentTask(null);
   };
 
   const addTask = (newTask) => {
-    // Here, you can add logic to make API calls if necessary.
     const newId = tasks.length ? Math.max(tasks.map((t) => t.id)) + 1 : 1;
     const taskToAdd = { id: newId, ...newTask };
     setTasks([...tasks, taskToAdd]);
@@ -45,7 +49,7 @@ const Dashboard = () => {
   const deleteTask = async (taskId) => {
     if (window.confirm("Are you sure you want to delete this task?")) {
       try {
-        await axios.delete(`/tasks/${taskId}`, {
+        await axios.delete(`/users/me/tasks/${taskId}`, {
           withCredentials: true,
         });
         const updatedTasks = tasks.filter((task) => task.id !== taskId);
@@ -60,7 +64,7 @@ const Dashboard = () => {
     const fetchTasks = async () => {
       setIsLoading(true);
       try {
-        const response = await axios.get("/tasks");
+        const response = await axios.get("/users/me/tasks");
         setTasks(response.data);
       } catch (error) {
         console.error("Could not fetch tasks:", error);
@@ -80,7 +84,7 @@ const Dashboard = () => {
         ...taskToToggle,
         isCompleted: !taskToToggle.isCompleted,
       };
-      await axios.put(`/tasks/${taskId}`, updatedTask, {
+      await axios.put(`/users/me/tasks/${taskId}`, updatedTask, {
         withCredentials: true,
       });
       const updatedTasks = tasks.map((task) =>
@@ -134,7 +138,7 @@ const Dashboard = () => {
         {showModal && (
           <Modal onClose={() => setShowModal(false)}>
             <TaskForm
-              onCancel={() => setShowModal(false)}
+              onCancel={cancelBtnHandler}
               onUpdate={updateTask}
               editingTask={currentTask}
               onAddTask={addTask}

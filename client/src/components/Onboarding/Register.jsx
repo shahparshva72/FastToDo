@@ -18,7 +18,7 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(`/users/?username=${username}&password=${password}`, null, {
+      const response = await axios.post(`/auth/register/?username=${username}&password=${password}`, null, {
         headers: {
           'Accept': 'application/json',
         },
@@ -33,7 +33,7 @@ const Register = () => {
         formData.append("username", username);
         formData.append("password", password);
 
-        const tokenResponse = await axios.post("/token", formData, {
+        const tokenResponse = await axios.post("/auth/login", formData, {
           headers: {
             "Content-Type": "application/x-www-form-urlencoded",
           },

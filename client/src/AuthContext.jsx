@@ -17,7 +17,7 @@ export const AuthProvider = ({ children, initialState = false }) => {
 
   const checkAuthenticated = async () => {
     try {
-      const response = await axios.get("/get-user", { withCredentials: true });
+      const response = await axios.get("/auth/get-user", { withCredentials: true });
       if (response.status === 200) {
         setIsLoggedIn(true);
         setUsername(response.data.username);
@@ -48,7 +48,7 @@ export const AuthProvider = ({ children, initialState = false }) => {
 
   const logout = async () => {
     try {
-      await axios.post("/logout");
+      await axios.post("/auth/logout");
       setIsLoggedIn(false);
     } catch (error) {
       setError(error.response.data);

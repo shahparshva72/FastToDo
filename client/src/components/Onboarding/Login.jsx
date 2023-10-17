@@ -20,7 +20,7 @@ const Login = () => {
       formData.append("username", username);
       formData.append("password", password);
 
-      const tokenResponse = await axios.post("/token", formData, {
+      const tokenResponse = await axios.post("/auth/login", formData, {
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
         },
@@ -28,13 +28,8 @@ const Login = () => {
       });
 
       if (tokenResponse.status === 200 && tokenResponse.data.access_token) {
-        const authToken = tokenResponse.data.access_token;
         try {
-          const userResponse = await axios.get("/get-user", {
-            headers: {
-              // 'Authorization': `Bearer ${authToken}`,
-              'Cookie': `access_token=${authToken}`
-            },
+          const userResponse = await axios.get("/auth/get-user", {
             withCredentials: true
           });
           if (userResponse.status === 200) {

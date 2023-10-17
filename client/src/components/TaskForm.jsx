@@ -1,14 +1,11 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
-import { useAuth } from "../AuthContext";
 
 const TaskForm = ({ editingTask, onUpdate, onCancel, onAddTask }) => {
   const [taskName, setTaskName] = useState(editingTask ? editingTask.taskName : "");
   const [taskDescription, setTaskDescription] = useState(editingTask ? editingTask.taskDescription : "");
   const [dueDate, setDueDate] = useState(editingTask ? editingTask.dueDate.split("T")[0] : "");
   const [dueTime, setDueTime] = useState(editingTask ? editingTask.dueDate.split("T")[1].split(":").slice(0, 2).join(":") : "");
-
-  const { id } = useAuth();
 
   useEffect(() => {
     if (editingTask) {
@@ -28,25 +25,17 @@ const TaskForm = ({ editingTask, onUpdate, onCancel, onAddTask }) => {
       taskDescription,
       dueDate: fullDueDate,
       isCompleted: false,
-      userId: id,
     };
-
-    if (editingTask) {
-      taskData = {
-        ...taskData,
-        id: editingTask.id
-      };
-    }
 
     try {
       if (editingTask) {
-        await axios.put(`/tasks/${editingTask.id}`, taskData, {
+        console.log("editingTask.id:", editingTask.id);
+        await axios.put(`/users/me/tasks/${editingTask.id}`, taskData, {
           withCredentials: true
         });
         onUpdate(taskData);
       } else {
-        const response = await axios.post("/tasks", null, {
-          params: taskData,
+        await axios.post("/users/me/tasks", taskData, {
           withCredentials: true
         });
         onAddTask(taskData);
@@ -116,7 +105,7 @@ const TaskForm = ({ editingTask, onUpdate, onCancel, onAddTask }) => {
         <button
           type="button"
           className="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded mr-2"
-          onClick={onCancel}  // Changed from props.onCancel
+          onClick={onCancel}
         >
           Cancel
         </button>
