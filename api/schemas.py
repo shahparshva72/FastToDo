@@ -14,6 +14,7 @@ class TaskResponseSchema(TaskSchema):
 class Token(BaseModel):
     access_token: str
     token_type: str
+    refresh_token: str  # Add this line
 
 
 class TokenData(BaseModel):

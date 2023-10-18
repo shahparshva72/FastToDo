@@ -1,8 +1,8 @@
 import PropTypes from "prop-types";
 
 const Modal = ({ children, onClose }) => (
-  <div className="fixed inset-0 bg-gray-900 bg-opacity-90 flex items-center justify-center">
-    {children}
+  <div className="fixed inset-0 bg-gray-900 bg-opacity-90 flex flex-col items-center justify-center">
+      {children}
   </div>
 );
 

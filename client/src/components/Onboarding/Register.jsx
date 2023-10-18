@@ -18,31 +18,29 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(`/auth/register/?username=${username}&password=${password}`, null, {
+      const registerResponse = await axios.post(`/auth/register/?username=${username}&password=${password}`, {}, {
         headers: {
           'Accept': 'application/json',
         },
       });
 
-      if (response.status === 200) {
-        // User registered successfully
-        console.log("User registered:", response.data);
 
+      if (registerResponse.status === 200) {
         // Now perform auto-login
         const formData = new URLSearchParams();
         formData.append("username", username);
         formData.append("password", password);
 
-        const tokenResponse = await axios.post("/auth/login", formData, {
+        const loginResponse = await axios.post("/auth/login", formData, {
           headers: {
             "Content-Type": "application/x-www-form-urlencoded",
           },
           withCredentials: true,
         });
 
-        if (tokenResponse.status === 200 && tokenResponse.data.access_token) {
-          setContextUsername(username);  // Set username state
-          setIsLoggedIn(true);  // Set login state
+        if (loginResponse.status === 200) {
+          setContextUsername(username);
+          setIsLoggedIn(true);
           navigate("/");  // Navigate to the home/dashboard page
         }
       }
@@ -50,6 +48,7 @@ const Register = () => {
       console.error("Error during registration or login:", error);
     }
   };
+
 
 
   return (

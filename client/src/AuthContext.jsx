@@ -24,10 +24,11 @@ export const AuthProvider = ({ children, initialState = false }) => {
         setId(response.data.id);
       }
     } catch (error) {
-      if (error.response && error.response.status === 401) {
+      const isRefreshed = await refreshAccessToken();
+      if (!isRefreshed) {
         setIsLoggedIn(false);
       }
-      setError(error.response.data); // Storing the error information.
+      setError(error.response.data);
     }
   };
 
@@ -38,13 +39,28 @@ export const AuthProvider = ({ children, initialState = false }) => {
   // Simplified Axios interceptor
   axios.interceptors.response.use(
     (response) => response,
-    (error) => {
+    async (error) => {
       if (error.response && error.response.status === 401) {
-        setIsLoggedIn(false);
+        const isRefreshed = await refreshAccessToken();  // Implement this function
+        if (!isRefreshed) {
+          setIsLoggedIn(false);
+        }
       }
       return Promise.reject(error);
     }
   );
+
+  const refreshAccessToken = async () => {
+    try {
+      const response = await axios.post("/auth/token/refresh");
+      if (response.status === 200) {
+        return true;
+      }
+    } catch (error) {
+      return false;
+    }
+  };
+
 
   const logout = async () => {
     try {

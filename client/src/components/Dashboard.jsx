@@ -116,8 +116,8 @@ const Dashboard = () => {
       <div className="max-w-screen-xl mx-auto">
         <nav className="bg-indigo-400 p-4 fixed top-0 left-0 w-full z-50">
           <div className="flex justify-between items-center">
-            <span className="text-white text-2xl font-extrabold">
-              FastToDo
+            <span className="text-white text-2xl font-bold">
+              Task Manager
             </span>
             <button className="text-white bg-indigo-500 hover:bg-indigo-700 px-4 py-2 rounded" onClick={logout}>
               Sign Out

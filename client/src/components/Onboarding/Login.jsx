@@ -24,17 +24,18 @@ const Login = () => {
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
         },
-        withCredentials: true,
+        withCredentials: true,  // Make sure cookies are sent with the request
       });
 
-      if (tokenResponse.status === 200 && tokenResponse.data.access_token) {
+      if (tokenResponse.status === 200) {
         try {
           const userResponse = await axios.get("/auth/get-user", {
-            withCredentials: true
+            withCredentials: true,  // Make sure cookies are sent with the request
           });
           if (userResponse.status === 200) {
             setContextUsername(username);
             setIsLoggedIn(true);
+            navigate("/");  // Navigate to dashboard or some protected route
           }
         } catch (getUserError) {
           console.error("Could not get user data:", getUserError);
@@ -44,6 +45,7 @@ const Login = () => {
       console.error("There was an error logging in:", loginError);
     }
   };
+
 
 
   return (
